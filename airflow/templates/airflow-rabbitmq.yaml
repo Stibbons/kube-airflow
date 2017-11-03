@@ -1,0 +1,29 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.airflow.prefix -}}rabbitmq
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: airflow
+        tier: rabbitmq
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: {{ .Values.airflow.prefix -}}rabbitmq
+        image: rabbitmq:3-management
+        ports:
+        - name: management
+          containerPort: 15672
+        - name: node
+          containerPort: 5672
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: "{{ .Values.airflow.db.rabbitmq.user -}}"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "{{ .Values.airflow.db.rabbitmq.password -}}"
+        - name: RABBITMQ_DEFAULT_VHOST
+          value: "airflow"

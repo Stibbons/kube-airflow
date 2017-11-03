@@ -1,0 +1,44 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.airflow.prefix -}}worker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: airflow
+        tier: worker
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: {{ .Values.airflow.prefix -}}worker
+        image: {{ .Values.airflow.image }}
+        volumeMounts:
+        - name: dags-data
+          mountPath: {{ .Values.airflow.dag_path }}
+        env:
+        - name: AIRFLOW_HOME
+          value: "/usr/local/airflow"
+        {{- if .Values.airflow.fernet_key }}
+        - name: FERNET_KEY
+          value: "{{- .Values.airflow.fernet_key -}}"
+        {{ end }}
+        - name: RABBITMQ_HOST
+          value: "{{- .Values.airflow.prefix -}}{{- .Values.airflow.db.rabbitmq.basename -}}"
+        - name: RABBITMQ_CREDS
+          value: "{{- .Values.airflow.db.rabbitmq.user -}}:{{- .Values.airflow.db.rabbitmq.password -}}"
+        - name: POSTGRES_HOST
+          value: "{{- .Values.airflow.prefix -}}{{- .Values.airflow.db.postgres.basename -}}"
+        - name: POSTGRES_CREDS
+          value: "{{- .Values.airflow.db.postgres.user -}}:{{- .Values.airflow.db.postgres.password -}}"
+        args: ["worker"]
+      volumes:
+        - name: dags-data
+        {{- if .Values.airflow.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflow.persistence.existingClaim | default (include "airflow.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

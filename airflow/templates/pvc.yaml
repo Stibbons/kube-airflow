@@ -1,0 +1,24 @@
+{{- if and .Values.airflow.persistence.enabled (not .Values.airflow.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "airflow.fullname" . }}
+  labels:
+    app: {{ template "airflow.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.airflow.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.airflow.persistence.size | quote }}
+{{- if .Values.airflow.persistence.storageClass }}
+{{- if (eq "-" .Values.airflow.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.airflow.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
