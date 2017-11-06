@@ -15,11 +15,11 @@ spec:
         - name: {{ .Values.airflow.prefix -}}worker
           image: {{ .Values.airflow.image }}
           imagePullPolicy: {{ .Values.airflow.image_pull_policy}}
-          {{- if .Values.airflow.persistence.enabled }}
+          {{- if .Values.persistence.enabled }}
           volumeMounts:
             - name: dags-data
               mountPath: {{ .Values.airflow.dag_path }}
-          {{- end -}}
+          {{ end }}
           # volumes:
           #     - /localpath/to/dags:/usr/local/airflow/dags
           envFrom:
