@@ -1,8 +1,5 @@
 airflow:
   # common settings and setting for the webserver
-  # For prefix, use only lower case alphanumeric characters, '-' or '.', and must start and end
-  # with an alphanumeric character
-  prefix: " "
   fernet_key: ""
   service:
     type: ClusterIP

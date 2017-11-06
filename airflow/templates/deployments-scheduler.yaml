@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Values.airflow.prefix -}}scheduler
+  name: {{ template "airflow.fullname" . }}-scheduler
 spec:
   replicas: 1
   template:
@@ -12,14 +12,14 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: {{ .Values.airflow.prefix -}}scheduler
+        - name: {{ template "airflow.fullname" . }}-scheduler
           image: {{ .Values.airflow.image }}
           imagePullPolicy: {{ .Values.airflow.image_pull_policy}}
           # volumes:
           #     - /localpath/to/dags:/usr/local/airflow/dags
           envFrom:
             - configMapRef:
-                name: {{ .Values.airflow.prefix }}airflow-cfg
+                name: {{ template "airflow.fullname" . }}-airflow-cfg
           args: ["scheduler", "-n", "{{ .Values.airflow.scheduler_num_runs }}"]
       volumes:
         - name: dags-data

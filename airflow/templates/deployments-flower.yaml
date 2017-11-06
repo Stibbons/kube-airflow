@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Values.airflow.prefix -}}flower
+  name: {{ template "airflow.fullname" . }}-flower
 spec:
   replicas: 1
   template:
@@ -12,7 +12,7 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: {{ .Values.airflow.prefix -}}flower
+        - name: {{ template "airflow.fullname" . }}-flower
           image: {{ .Values.airflow.image }}
           imagePullPolicy: {{ .Values.airflow.image_pull_policy}}
           env:
@@ -20,8 +20,8 @@ spec:
               value: "5555"
           envFrom:
             - configMapRef:
-                name: {{ .Values.airflow.prefix }}airflow-cfg
+                name: {{ template "airflow.fullname" . }}-airflow-cfg
           ports:
-            - name: {{ .Values.airflow.prefix -}}flower
+            - name: flower
               containerPort: 5555
           args: ["flower"]
