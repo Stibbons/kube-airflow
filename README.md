@@ -21,50 +21,15 @@ This repository contains:
 ## Informations
 
 * Highly inspired by the great work [puckel/docker-airflow](https://github.com/puckel/docker-airflow)
-* Based on Debian Jessie official Image [debian:jessie](https://registry.hub.docker.com/_/debian/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [RabbitMQ](https://hub.docker.com/_/rabbitmq/) as queue
+* Based on Debian Jessie official Image [debian:stretch](https://registry.hub.docker.com/_/debian/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [RabbitMQ](https://hub.docker.com/_/rabbitmq/) as queue
 * Following the Airflow release from [Python Package Index](https://pypi.python.org/pypi/airflow)
 
 ## Manual Installation
 
-Create all the deployments and services for Airflow:
-
-    kubectl create -f airflow.all.yaml
-
-## Helm Deployment
-
-Ensure your helm installation is done, you may need to have `TILLER_NAMESPACE` set a an environment
-variable.
-
-Deploy to Kubernetes using:
-
-    make helm-install NAMESPACE=airflow
-
-Remove from the clusting using:
-
-    make helm-uninstall
-
-### Helm configuration customization
-
-Helm allow to overload the configuration to adapt to your environment. You probably want to specify
-your own ingress configuration for instance.
-
-Note:
- 
-    Do NOT use characters such as " (double quote), ' (simple quote), / (slash) or \ (backslash)
-    in your passwords
-
-
-## Build Docker image
-
-`git clone` this repository and then just run:
-
-    make build
-
-## Usage
 
 Create all the deployments and services to run Airflow on Kubernetes:
 
-       kubectl create -f airflow.all.yaml
+    kubectl create -f airflow.all.yaml
 
 It will create deployments for:
 
@@ -82,8 +47,129 @@ and services for:
 * airflow-webserver
 * airflow-flower
 
+## Helm Deployment
+
+Ensure your helm installation is done, you may need to have `TILLER_NAMESPACE` set as
+environment variable.
+
+Deploy to Kubernetes using:
+
+    make helm-install NAMESPACE=airflow
+
+Upgrade your installation with:
+
+    make helm-upgrade
+
+Remove from the cluster using:
+
+    make helm-uninstall
+
+### Helm ingresses
+
+The Chart provides ingress configuration to allow customization the installation by adapting
+the `config.yaml` depending on your setup.
+
+### Prefix
+
+This Helm chart allows using a "prefix" string that will be added to every Kubernetes names.
+That allows instantiating several, independent Airflow in the same namespace.
+
+Note:
+
+    Do NOT use characters such as " (double quote), ' (simple quote), / (slash) or \ (backslash)
+    in your passwords and prefix
+
+### DAGs deployment: embedded DAGs or git-sync
+
+This chart provide basically two way of deploying DAGs in your Airflow installation:
+
+- embedded DAGs
+- Git-Sync
+
+An enhancement can be to support Persistant Storage. If you are willing to contribute, do not
+hesitate to do a Pull Request !
+
+#### Using Git-Sync
+
+Git-sync is the easiest way to automatically update your DAGs. It simply check periodially (by
+default every minute) a Git project on a given branch and check this new version when available.
+Scheduler and worker see changes almost real-time. There is no need to other tool and complex
+rolling-update procedure.
+
+While it is extremely cool to see its DAG appears on Airflow 60s after merge on this project, you should be aware of some limitations Airflow has with dynamic DAG updates:
+
+    If the scheduler reloads a dag in the middle of a dagrun then the dagrun will actually start
+    using the new version of the dag in the middle of execution.
+
+This is a known issue with airflow and it means it's unsafe in general to use a git-sync
+like solution with airflow without:
+
+ - using explicit locking, ie never pull down a new dag if a dagrun is in progress
+ - make dags immutable, never modify your dag always make a new one
+
+Also keep in mind using git-sync may not be scalable at all in production if you have lot of DAGs.
+The best way to deploy you DAG is to build a new docker image containing all the DAG and their
+dependencies. To do so, fork this project
+
+#### Embedded DAGs
+
+If you want more control on the way you deploy your DAGs, you can use embedded DAGs, where DAGs
+are burned inside the Docker container deployed as Scheduler and Workers.
+
+Be aware this requirement more heavy tooling than using git-sync, especially if you use CI/CD:
+
+- your CI/CD should be able to build a new docker image each time your DAGs are updated.
+- your CI/CD should be able to control the deployment of this new image in your kubernetes cluster
+
+Example of procedure:
+- Fork this project
+- Place your DAG inside the `dags` folder of this project, update `requirements-dags.txt` to
+  install new dependencies if needed (see bellow)
+- Add build script connected to your CI that will build the new docker image
+- Deploy on your Kubernetes cluster
+
+You can avoid forking this project by:
+
+- keep a git-project dedicated to storing only your DAGs + dedicated `requirements.txt`
+- you can gate any change to DAGs in your CI (unittest, `pip install -r requirements-dags.txt`,.. )
+- have your CI/CD makes a new docker image after each successful merge using
+
+      DAG_PATH=$PWD
+      cd /path/to/kube-aiflow
+      make ENBEDDED_DAGS_LOCATION=$DAG_PATH
+
+- trigger the deployment on this new image on your Kubernetes infrastructure
+
+### Python dependencies
+
+If you want to add specific python dependencies to use in your DAGs, you simply declare them inside
+the `requirements/dags.txt` file. They will be automatically installed inside the container during
+build, so you can directly use these library in your DAGs.
+
+To use another file, call:
+
+    make REQUIREMENTS_TXT_LOCATION=/path/to/you/dags/requirements.txt
+
+Please note this requires you set up the same tooling environment in your CI/CD that when using
+Embedded DAGs.
+
+### Helm configuration customization
+
+Helm allow to overload the configuration to adapt to your environment. You probably want to specify
+your own ingress configuration for instance.
+
+
+## Build Docker image
+
+`git clone` this repository and then just run:
+
+    make build
+
+## Run with minikube
+
 You can browse the Airflow dashboard via running:
 
+    minikube start
     make browse-web
 
 the Flower dashboard via running:

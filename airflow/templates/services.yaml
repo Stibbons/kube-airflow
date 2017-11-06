@@ -23,14 +23,14 @@ spec:
     app: airflow
     tier: rabbitmq
   ports:
-    - name: node
+    - name: {{ .Values.airflow.prefix -}}node
       protocol: TCP
       port: 5672
-      targetPort: node
-    - name: management
+      targetPort: {{ .Values.airflow.prefix -}}node
+    - name: {{ .Values.airflow.prefix -}}management
       protocol: TCP
       port: 15672
-      targetPort: management
+      targetPort: {{ .Values.airflow.prefix -}}management
 ---
 apiVersion: v1
 kind: Service
