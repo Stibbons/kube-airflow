@@ -40,7 +40,7 @@ db:
     database: airflow
 
 persistence:
-  enabled: false
+  enabled: true
   ## storageClass: Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -48,6 +48,8 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   # storageClass: default
+  # If defined, will overide the claim name
+  claimName: "killjoy-dragonfly"
   accessMode: ReadWriteOnce
   size: 1Gi
 

@@ -30,7 +30,7 @@ spec:
         - name: dags-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-              claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
+              claimName: {{ ((printf "%s-worker" ( .Values.persistence.existingClaim | .Values.persistence.claimName | default (include "airflow.fullname" . )))) }}
         {{- else }}
           emptyDir: {}
         {{- end -}}
