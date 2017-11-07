@@ -1,4 +1,4 @@
-AIRFLOW_VERSION ?= 1.8.0.0
+AIRFLOW_VERSION ?= HEAD-stibbons-url_prefix-kube-executor
 KUBECTL_VERSION ?= 1.6.1
 KUBE_AIRFLOW_VERSION ?= 0.10
 
