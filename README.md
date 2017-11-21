@@ -129,6 +129,13 @@ map:
   `{{ POSTGRES_CREDS }}`) or at least keep it aligned with the configuration applyied in your
   Kubernetes Cluster.
 
+#### Worker Statefulset
+
+As you can see, Celery workers uses StatefulSet instead of deployment. It is used to freeze their
+DNS using a Kubernetes Headless Service, and allow the webserver to requests the logs from each
+workers individually. This requires to expose a port (8793) and ensure the pod DNS is accessible to
+the web server pod, which is why StatefulSet is for.
+
 #### Embedded DAGs
 
 If you want more control on the way you deploy your DAGs, you can use embedded DAGs, where DAGs

@@ -32,6 +32,40 @@ celery:
 ingress:
   enabled: false
   annotations:
+    # Define the annotation here to configure rewriting rules related to your Load balancer
+    #
+    # Please note their is a small difference between the way Airflow Web server and Flower handles
+    # url_prefix in HTTP requests:
+    #  - airflow webserver handles it completely, just ask your load balancer to give the HTTP
+    #    header like the requested URL
+    #  - Flower wants HTTP header to behave like there was no URL prefix, and but still form the
+    #    right URL in generated pages.
+    #
+    #    Extracted from the Flower documentation:
+    #    (https://github.com/mher/flower/blob/master/docs/config.rst#url_prefix)
+    #
+    #        To access Flower on http://example.com/flower run it with:
+    #            flower --url_prefix=flower
+    #
+    #        Use the following nginx configuration:
+    #            server {
+    #              listen 80;
+    #              server_name example.com;
+    #
+    #              location /flower/ {
+    #                rewrite ^/flower/(.*)$ /$1 break;
+    #                proxy_pass http://example.com:5555;
+    #                proxy_set_header Host $host;
+    #              }
+    #            }
+    web:
+      # Example for Traefik:
+      # traefik.frontend.rule.type: PathPrefix
+      # kubernetes.io/ingress.class: traefik
+    flower:
+      # Example for Traefik:
+      # traefik.frontend.rule.type: PathPrefixStrip
+      # kubernetes.io/ingress.class: traefik
   host: ""
   path:
     web: /airflow
