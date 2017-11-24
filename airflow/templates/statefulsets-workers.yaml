@@ -12,8 +12,6 @@ spec:
   serviceName: "{{- .Values.airflow.prefix -}}workers"
   updateStrategy:
     type: RollingUpdate
-    rollingUpdate:
-      partition: 3
   replicas: {{ .Values.celery.num_workers }}
   template:
     metadata:
