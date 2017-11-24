@@ -22,7 +22,7 @@ spec:
         tier: worker
     spec:
       restartPolicy: Always
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: 30
       containers:
         - name: "{{- .Values.airflow.prefix -}}worker"
           imagePullPolicy: {{ .Values.airflow.image_pull_policy}}
