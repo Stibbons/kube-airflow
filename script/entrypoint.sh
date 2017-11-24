@@ -71,7 +71,7 @@ if [ ! -z $GIT_SYNC_REPO ]; then
     # remove possible embedded dags to avoid conflicts
     rm -rf $AIRFLOW_HOME/dags/*
     echo "Executing background task git-sync on repo $GIT_SYNC_REPO"
-    $AIRFLOW_HOME/git-sync --dest $AIRFLOW_HOME/dags &
+    $AIRFLOW_HOME/git-sync --dest $AIRFLOW_HOME/dags --force &
 fi
 
 $CMD "$@"
