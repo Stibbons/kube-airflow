@@ -10,6 +10,10 @@ spec:
   #   matchLabels:
   #     app: airflow
   serviceName: "{{- .Values.airflow.prefix -}}workers"
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 3
   replicas: {{ .Values.celery.num_workers }}
   template:
     metadata:
@@ -19,10 +23,6 @@ spec:
     spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
-      updateStrategy:
-        type: RollingUpdate
-        rollingUpdate:
-          partition: 3
       containers:
         - name: "{{- .Values.airflow.prefix -}}worker"
           imagePullPolicy: {{ .Values.airflow.image_pull_policy}}
