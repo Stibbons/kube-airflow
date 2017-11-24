@@ -18,6 +18,11 @@ spec:
         tier: worker
     spec:
       restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          partition: 3
       containers:
         - name: "{{- .Values.airflow.prefix -}}worker"
           imagePullPolicy: {{ .Values.airflow.image_pull_policy}}
