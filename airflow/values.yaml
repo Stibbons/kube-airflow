@@ -104,6 +104,8 @@ flower:
   url_prefix: ""
 
 dags:
+  # pickle_dag: send DAG using pickle from the scheduler to the worker
+  pickle_dag: true
   # Use of git-sync: beware when using git-sync and airflow. If the scheduler reloads a dag in the
   # middle of a dagrun then the dagrun will actually start using the new version of the dag in the
   # middle of execution.
