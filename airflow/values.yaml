@@ -11,8 +11,10 @@ airflow:
   image: mumoshu/kube-airflow:1.8.0.0-1.6.1
   # image_pull_policy: Always or IfNotPresent
   image_pull_policy: Always
-  # Set scheduler_num_runs to -1 to loop indefinitively
-  scheduler_num_runs: "-1"
+  # Set scheduler_num_runs to control how the schduler behaves:
+  #   -1 will let him looping indefinitively but it will never update the DAG
+  #   1 will have the scheduler quit after each execution, kubernetes will restart it
+  scheduler_num_runs: "1"
   url_prefix: ""
   # airflow-cfg allow you to override the whole content of airflow.cfg at once
   # BEWARE of maintaining uniformity in your configuration, especially since the bootstrap script
