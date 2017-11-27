@@ -3,3 +3,9 @@
 # of Git-sync.
 
 ruamel-yaml
+scipy
+numpy
+pandas
+seaborn
+matplotlib
+pyspark
