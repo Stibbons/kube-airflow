@@ -12,10 +12,10 @@ ENV     DEBIAN_FRONTEND noninteractive
 ENV     TERM linux
 
 # Airflow
-ARG     AIRFLOW_VERSION=%%AIRFLOW_VERSION%%
+ARG     AIRFLOW_VERSION=HEAD-stibbons-url_prefix-kube-executor
 ENV     AIRFLOW_HOME /usr/local/airflow
-ENV     EMBEDDED_DAGS_LOCATION=%%EMBEDDED_DAGS_LOCATION%%
-ENV     REQUIREMENTS_TXT_LOCATION=%%REQUIREMENTS_TXT_LOCATION%%
+ENV     EMBEDDED_DAGS_LOCATION=./dags
+ENV     REQUIREMENTS_TXT_LOCATION=requirements/dags.txt
 
 # Define en_US.
 ENV     LANGUAGE en_US.UTF-8
@@ -75,7 +75,7 @@ RUN         set -ex \
                 /usr/share/doc \
                 /usr/share/doc-base
 
-ENV         KUBECTL_VERSION %%KUBECTL_VERSION%%
+ENV         KUBECTL_VERSION 1.6.1
 
 RUN         curl -L -o /usr/local/bin/kubectl \
                 https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl \
