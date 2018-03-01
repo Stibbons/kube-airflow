@@ -11,6 +11,6 @@ psycopg2
 celery>=4.0.0
 flower>=0.7.3
 kubernetes
-git+https://github.com/Stibbons/incubator-airflow@kube_executor_url_prefix_v6#egg=airflow
+git+https://github.com/apache/incubator-airflow#egg=apache-airflow
 Flask-WTF==0.14
 click
