@@ -61,6 +61,7 @@ helm-upgrade-install:
 		--wait\
 		--debug \
 		--namespace=$(NAMESPACE) \
+		--timeout 300 \
 		$(HELM_VALUES_ARG) \
 		$(HELM_RELEASE_NAME) \
 		$(CHART_LOCATION)
