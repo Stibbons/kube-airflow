@@ -1,5 +1,6 @@
 airflow:
   image:
+    ## Test with stibbons31/docker-airflow-dev to allow airflow mount other that root
     repository: stibbons31/docker-airflow-dev
     tag: 2.0dev
     pull_policy: IfNotPresent
@@ -26,5 +27,13 @@ ingress:
   ## hostname for both endpoint
   host: "localhost"
   path:
-    web: /
-    flower: /flower
+    web: "/airflow"
+    # check with the value documentation to see why "/flower" won't work as expected when using
+    # minikube without ingress (if traefik is used, yes you can try different value for
+    # ingress.path.flower)
+    flower: "/"
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 1Gi

@@ -40,7 +40,7 @@ minikube-url-flower:
 	minikube service $(HELM_RELEASE_NAME)-flower -n $(NAMESPACE) --url
 
 helm-init:
-	helm init --upgrade
+	helm init --upgrade --wait --debug
 
 helm-install-traefik:
 	minikube addons enable ingress

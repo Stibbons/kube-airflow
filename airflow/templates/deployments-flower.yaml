@@ -30,3 +30,7 @@ spec:
               containerPort: 5555
               protocol: TCP
           args: ["flower"]
+          # livenessprobe:
+          #   httpGet:
+          #     path: "{{ .Values.ingress.path.flower }}/"
+          #     port: flower

@@ -23,6 +23,8 @@ airflow:
   # image
   #   repository: stibbons31/docker-airflow-dev
   #   tag: 2.0dev
+  ## Airflow 2.0 allows changing the value ingress.path.web (see bellow). In version < 2.0,
+  ## changing the mount point of the web server won't have any effect.
   image:
     ##
     ## docker-airflow image
@@ -63,25 +65,25 @@ ingress:
   enabled: false
   ##
   ## Define the annotation here to configure rewriting rules related to your Load balancer
-  #
+  ##
   ## Please note their is a small difference between the way Airflow Web server and Flower handles
   ## URL prefixes in HTTP requests:
   ##  - airflow webserver handles it completely, just let your load balancer to give the HTTP
   ##    header like the requested URL (no special configuration neeed)
   ##  - Flower wants HTTP header to behave like there was no URL prefix, and but still generates
-  ##    the right URL in html pages.
-  #
+  ##    the right URL in html pages thanks to its `--url-prefix` parameter
+  ##
   ##    Extracted from the Flower documentation:
   ##    (https://github.com/mher/flower/blob/master/docs/config.rst#url_prefix)
-  #
+  ##
   ##        To access Flower on http://example.com/flower run it with:
-  ##            flower --url_prefix=flower
-  #
+  ##            flower --url-prefix=/flower
+  ##
   ##        Use the following nginx configuration:
   ##            server {
   ##              listen 80;
   ##              server_name example.com;
-  #
+  ##
   ##              location /flower/ {
   ##                rewrite ^/flower/(.*)$ /$1 break;
   ##                proxy_pass http://example.com:5555;
@@ -99,23 +101,36 @@ ingress:
     ## Annotations for the webserver
     flower:
       ##
+      ## NOTE: it is important here to have your reverse proxy strip the path/rewrite the URL
       ## Example for Traefik:
       # traefik.frontend.rule.type: PathPrefixStrip
       # kubernetes.io/ingress.class: traefik
   ##
   ## hostname of the webserver and the flower
   host: ""
+  ##
   ## Configure path mount in URLs
+  ## NOTE: do NOT keep any trailing slash. For root configuration, set and empty string
   path:
     ##
     ## if web is '/airflow':
-    ##  - UI will be accessible to '/airflow/admin'
+    ##  - UI will be accessible at 'http://mycompany.com/airflow/admin'
     ##  - Healthcheck is at 'http://mycompany.com/airflow/health'
     ##  - api is at 'http://mycompany.com/airflow/api'
-    web: /
+    ## NOTE: This requires an airflow version > 1.9.x
+    ## For the moment (March 2018) this is **not** available on official package, you will have
+    ## to use an image where airflow has been updated to its current HEAD.
+    ## You can use the following one:
+    ##  stibbons31/docker-airflow-dev:2.0dev
+    web: ""
     ##
     ## if flower is '/airflow/flower':
-    ##  - api is at 'http://mycompany.com/airflow/flower'
+    ##  - Flower UI is at 'http://mycompany.com/airflow/flower'
+    ## NOTE: you need to have a reverse proxy/load balancer able to do URL rewrite in order to have
+    ## flower mounted on other path than root. Flower only does half the job in url prefixing: it
+    ## only generates the right URL/relative paths in the **returned HTML files**, but expects the
+    ## request to have been be at the root.
+    ## That's why we need a reverse proxy/load balancer that is able to strip the path
     flower: /flower
 
 ##

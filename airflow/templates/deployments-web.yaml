@@ -37,7 +37,8 @@ spec:
           args: ["webserver"]
           livenessProbe:
             httpGet:
-              path: "{{ .Values.ingress.path.web }}health"
+              path: "{{ .Values.ingress.path.web }}/health"
               port: web
+            ## Keep 2 minutes the delay to allow database operation to be performed at init
             initialDelaySeconds: 120
             periodSeconds: 10

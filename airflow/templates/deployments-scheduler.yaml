@@ -30,6 +30,11 @@ spec:
           envFrom:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: dags-data
+              mountPath: {{ .Values.airflow.dag_path }}
+          {{- end }}
           args: ["scheduler", "-n", "{{ .Values.airflow.scheduler_num_runs }}", "-p"]
       volumes:
         - name: dags-data
