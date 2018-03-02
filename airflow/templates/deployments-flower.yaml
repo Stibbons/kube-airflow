@@ -20,8 +20,8 @@ spec:
       restartPolicy: Always
       containers:
         - name: {{ .Chart.Name }}-flower
-          image: {{ .Values.airflow.image }}:{{ .Values.airflow.imageTag }}
-          imagePullPolicy: {{ .Values.airflow.image_pull_policy }}
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pull_policy }}
           envFrom:
             - configMapRef:
                 name: "{{ .Chart.Name }}-env"

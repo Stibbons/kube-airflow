@@ -25,8 +25,8 @@ spec:
       restartPolicy: Always
       containers:
         - name: {{ .Chart.Name }}-web
-          image: {{ .Values.airflow.image }}:{{ .Values.airflow.imageTag }}
-          imagePullPolicy: {{ .Values.airflow.image_pull_policy}}
+          image: {{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}
+          imagePullPolicy: {{ .Values.airflow.image.pull_policy}}
           ports:
             - name: web
               containerPort: 8080

@@ -30,8 +30,8 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: {{ .Chart.Name }}-worker
-          imagePullPolicy: {{ .Values.airflow.image_pull_policy }}
-          image: "{{ .Values.airflow.image }}:{{ .Values.airflow.imageTag }}"
+          imagePullPolicy: {{ .Values.airflow.image.pull_policy }}
+          image: "{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}"
           envFrom:
             - configMapRef:
                 name: "{{ .Chart.Name }}-env"
