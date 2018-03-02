@@ -27,6 +27,7 @@ airflow:
   ##   -1 will let him looping indefinitively but it will never update the DAG
   ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it
   scheduler_num_runs: "-1"
+  web_replicas: 2
   ## prefix to the endpoint of the webserver
   ## Ex: http://mycompany.com/airflow
   ## url_prefix is "/airflow"

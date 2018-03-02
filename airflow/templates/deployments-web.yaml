@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.airflow.web_replicas }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
