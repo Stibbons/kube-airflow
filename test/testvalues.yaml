@@ -1,0 +1,26 @@
+airflow:
+  image:
+    repository: stibbons31/docker-airflow-dev
+    tag: 2.0dev
+    pull_policy: IfNotPresent
+  # config:
+  #   AIRFLOW__WEBSERVER__BASE_URL: http://localhost:8080/
+
+celery:
+  ## Number of celery workers to initialize
+  num_workers: 4
+
+ingress:
+  enabled: true
+  annotations:
+    web:
+      traefik.frontend.rule.type: PathPrefix
+      kubernetes.io/ingress.class: traefik
+    flower:
+      traefik.frontend.rule.type: PathPrefixStrip
+      kubernetes.io/ingress.class: traefik
+  ## hostname for both endpoint
+  host: "localhost"
+  path:
+    web: /
+    flower: /flower

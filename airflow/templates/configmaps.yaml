@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ .Chart.Name }}-env"
+  name: "{{ template "airflow.fullname" . }}-env"
 data:
   POSTGRES_HOST: "{{ template "airflow.postgresql.fullname" . }}"
   POSTGRES_DB: "{{ .Values.postgresql.postgresDatabase }}"
@@ -10,6 +10,9 @@ data:
   REDIS_HOST: "{{ template "airflow.redis.fullname" . }}"
   REDIS_PASSWORD: "{{ .Values.redis.redisPassword }}"
   FLOWER_PORT: "5555"
+  AIRFLOW__WEBSERVER__BASE_URL: "http://localhost:8080{{ .Values.airflow.url_prefix }}"
+  # Note: changing `Values.airflow.config` won't change the configmap checksum and so won't make
+  # the pods to restart
   {{- range $setting, $option := .Values.airflow.config }}
   {{ $setting }}: "{{ $option }}"
   {{- end }}

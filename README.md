@@ -1,52 +1,22 @@
-# kube-airflow (Celery Executor)
-[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/stibbons31/kube-airflow/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/stibbons31/kube-airflow.svg?maxAge=2592000)]()
-[![Docker Stars](https://img.shields.io/docker/stars/stibbons31/kube-airflow.svg?maxAge=2592000)]()
+# Airflow Helm Chart
 
-This repository contains a forked version of [mumoshu/kube-airflow](https://github.com/mumoshu/kube-airflow) providing a production ready Helm
+This repository contains a forked version of 
+[mumoshu/kube-airflow](https://github.com/mumoshu/kube-airflow) providing a production ready Helm
 chart for running Airflow with the Celery executor on a Kubernetes Cluster.
-
-* **Dockerfile(.template)** of [airflow](https://github.com/apache/incubator-airflow) for [Docker](https://www.docker.com/) images published to the public [Docker Hub Registry](https://registry.hub.docker.com/).
-* **airflow.all.yaml** for manual creating Kubernetes services and deployments to run Airflow on Kubernetes
-* **Helm Chart** in `./airflow` for deployments using Helm
 
 ## Informations
 
-* Fork of [mumoshu/kube-airflow](https://github.com/mumoshu/kube-airflow)
-* Highly inspired by the great work [puckel/docker-airflow](https://github.com/puckel/docker-airflow)
-* Based on Debian Stretch official Image [debian:stretch](https://registry.hub.docker.com/_/debian/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [RabbitMQ](https://hub.docker.com/_/rabbitmq/) as queue
-* Following the Airflow release from [Python Package Index](https://pypi.python.org/pypi/airflow)
+* Based on work from [mumoshu/kube-airflow](https://github.com/mumoshu/kube-airflow)
+* Leverage the Docker Airflow image [puckel/docker-airflow](https://github.com/puckel/docker-airflow)
 
-## Manual Installation
-
-Create all the deployments and services to run Airflow on Kubernetes:
-
-    kubectl create -f airflow.all.yaml
-
-It will create deployments for:
-
-* postgres
-* rabbitmq
-* airflow-webserver
-* airflow-scheduler
-* airflow-flower
-* airflow-worker
-
-and services for:
-
-* postgres
-* rabbitmq
-* airflow-webserver
-* airflow-flower
-
-## Helm Deployment (recommended)
+## Helm Deployment
 
 Ensure your helm installation is done, you may need to have `TILLER_NAMESPACE` set as
 environment variable.
 
 Deploy to Kubernetes using:
 
-    make helm-install NAMESPACE=yournamespace HELM_VALUES=/path/to/you/values.yaml
+    make helm-upgrade HELM_RELEASE_NAME=af1 NAMESPACE=yournamespace HELM_VALUES=/path/to/your/own/values.yaml
 
 ### Helm ingresses
 
@@ -55,13 +25,7 @@ the `config.yaml` depending on your setup.
 
 ### Prefix
 
-This Helm chart allows using a "prefix" string that will be added to every Kubernetes names.
-That allows instantiating several, independent Airflow clusters in the same namespace.
-
-Note:
-
-    Do NOT use characters such as " (double quote), ' (simple quote), / (slash) or \ (backslash)
-    in your passwords and prefix and keep it as small as possible.
+This Helm automatically prefixes all names using the release name to avoid collisions.
 
 ### DAGs deployment: embedded DAGs or git-sync
 
@@ -167,18 +131,11 @@ Embedded DAGs.
 Helm allow to overload the configuration to adapt to your environment. You probably want to specify
 your own ingress configuration for instance.
 
-
-## Build Docker image
-
-`git clone` this repository and then just run:
-
-    make build
-
 ## Run with minikube
 
 You can browse the Airflow dashboard via running:
 
-    minikube start
+    make minikube-start
     make browse-web
 
 the Flower dashboard via running:

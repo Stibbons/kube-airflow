@@ -29,7 +29,7 @@ spec:
           imagePullPolicy: {{ .Values.airflow.image.pull_policy}}
           envFrom:
             - configMapRef:
-                name: "{{ .Chart.Name }}-env"
+                name: "{{ template "airflow.fullname" . }}-env"
           args: ["scheduler", "-n", "{{ .Values.airflow.scheduler_num_runs }}", "-p"]
       volumes:
         - name: dags-data

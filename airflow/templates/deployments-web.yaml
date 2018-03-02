@@ -33,11 +33,11 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: "{{ .Chart.Name }}-env"
+                name: "{{ template "airflow.fullname" . }}-env"
           args: ["webserver"]
           livenessProbe:
             httpGet:
-              path: "{{ .Values.airflow.url_prefix }}/health"
+              path: "{{ .Values.airflow.url_prefix }}health"
               port: web
-            # initialDelaySeconds: 120
-            # periodSeconds: 10
+            initialDelaySeconds: 120
+            periodSeconds: 10

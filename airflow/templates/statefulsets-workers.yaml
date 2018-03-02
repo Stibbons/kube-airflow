@@ -34,7 +34,7 @@ spec:
           image: "{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}"
           envFrom:
             - configMapRef:
-                name: "{{ .Chart.Name }}-env"
+                name: "{{ template "airflow.fullname" . }}-env"
           {{- if .Values.persistence.enabled }}
           volumeMounts:
             - name: dags-data

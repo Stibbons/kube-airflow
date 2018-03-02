@@ -24,7 +24,7 @@ spec:
           imagePullPolicy: {{ .Values.airflow.image.pull_policy }}
           envFrom:
             - configMapRef:
-                name: "{{ .Chart.Name }}-env"
+                name: "{{ template "airflow.fullname" . }}-env"
           ports:
             - name: flower
               containerPort: 5555
