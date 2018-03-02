@@ -1,5 +1,5 @@
-# Workers are not in deployment, but in StatefulSet, to allow each worker expose a mini-server
-# that only serve logs, that will be used by the web server.
+## Workers are not in deployment, but in StatefulSet, to allow each worker expose a mini-server
+## that only serve logs, that will be used by the web server.
 
 apiVersion: apps/v1beta1
 kind: StatefulSet
@@ -14,8 +14,8 @@ spec:
   serviceName: "{{ template "airflow.fullname" . }}-workers"
   updateStrategy:
     type: RollingUpdate
-  # Use experimental burst mode for faster StatefulSet scaling
-  #   https://github.com/kubernetes/kubernetes/commit/c2c5051adf096ffd48bf1dcf5b11cb47e464ecdd
+  ## Use experimental burst mode for faster StatefulSet scaling
+  ##   https://github.com/kubernetes/kubernetes/commit/c2c5051adf096ffd48bf1dcf5b11cb47e464ecdd
   podManagementPolicy: Parallel
   replicas: {{ .Values.celery.num_workers }}
   template:
@@ -52,8 +52,8 @@ spec:
             - name: dags-data
               mountPath: {{ .Values.airflow.dag_path }}
           {{- end }}
-          # volumes:
-          #     - /localpath/to/dags:/usr/local/airflow/dags
+          ## volumes:
+          ##     - /localpath/to/dags:/usr/local/airflow/dags
           args: ["worker"]
           ports:
             - name: wlog
