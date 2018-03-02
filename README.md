@@ -136,6 +136,7 @@ your own ingress configuration for instance.
 You can browse the Airflow dashboard via running:
 
     make minikube-start
+    make test
     make browse-web
 
 the Flower dashboard via running:

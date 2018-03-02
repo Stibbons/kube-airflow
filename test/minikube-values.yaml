@@ -3,8 +3,11 @@ airflow:
     repository: stibbons31/docker-airflow-dev
     tag: 2.0dev
     pull_policy: IfNotPresent
-  # config:
-  #   AIRFLOW__WEBSERVER__BASE_URL: http://localhost:8080/
+  service:
+    # Minikube is happier with NodePort
+    type: NodePort
+  config:
+    AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
 
 celery:
   ## Number of celery workers to initialize

@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.airflow.service.type }}
   selector:
     app: {{ template "airflow.name" . }}-web
     release: {{ .Release.Name }}
@@ -27,7 +27,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.airflow.service.type }}
   selector:
     app: {{ template "airflow.name" . }}-flower
     release: {{ .Release.Name }}
