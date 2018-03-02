@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Chart.Name }}-env"
+data:
+  POSTGRES_HOST: "{{ template "airflow.postgresql.fullname" . }}"
+  POSTGRES_DB: "{{ .Values.postgresql.postgresDatabase }}"
+  POSTGRES_USER: "{{ .Values.postgresql.postgresUser }}"
+  POSTGRES_PASSWORD: "{{ .Values.postgresql.postgresPassword }}"
+  REDIS_HOST: "{{ template "airflow.redis.fullname" . }}"
+  REDIS_PASSWORD: "{{ .Values.redis.redisPassword }}"
+  FLOWER_PORT: "5555"
+  {{- range $setting, $option := .Values.airflow.config }}
+  {{ $setting }}: "{{ $option }}"
+  {{- end }}

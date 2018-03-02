@@ -11,6 +11,8 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
       labels:
         app: {{ template "airflow.name" . }}-flower
         release: {{ .Release.Name }}
@@ -20,17 +22,9 @@ spec:
         - name: {{ .Chart.Name }}-flower
           image: {{ .Values.airflow.image }}:{{ .Values.airflow.imageTag }}
           imagePullPolicy: {{ .Values.airflow.image_pull_policy }}
-          env:
-            - name: FLOWER_PORT
-              value: "5555"
-            - name: REDIS_HOST
-              value: {{ template "airflow.redis.fullname" . }}
-            - name: REDIS_PASSWORD
-              value: {{ .Values.redis.redisPassword }}
-            {{- range $setting, $option := .Values.airflow.config }}
-            - name: {{ $setting }}
-              value: {{ $option }}
-            {{- end }}
+          envFrom:
+            - configMapRef:
+                name: "{{ .Chart.Name }}-env"
           ports:
             - name: flower
               containerPort: 5555

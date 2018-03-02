@@ -28,6 +28,7 @@ airflow:
   ## If mount at root, leave empty string: ""
   ## Do not add trailing slash
   url_prefix: ""
+  ## Custom airflow configuration
   config: {}
 
 celery:
