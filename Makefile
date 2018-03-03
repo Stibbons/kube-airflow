@@ -4,11 +4,19 @@ NAMESPACE ?= airflow-dev
 CHART_LOCATION ?= airflow/
 HELM_RELEASE_NAME ?= airflow
 HELM_VALUES_FILE ?= ""
+## Set HELM_RECREATE_PODS to 'yes' to force pod recreation
+HELM_RECREATE_PODS ?= no
 
 ifeq ($(HELM_VALUES_FILE), "")
 	HELM_VALUES_ARG=
 else
 	HELM_VALUES_ARG=-f $(HELM_VALUES_FILE)
+endif
+
+ifeq ($(HELM_RECREATE_PODS), "yes")
+	HELM_RECREATE_PODS_ARG=
+else
+	HELM_RECREATE_PODS_ARG=--recreate-pods
 endif
 
 reset-minikube:
@@ -62,7 +70,7 @@ helm-upgrade-install:
 	helm upgrade --install \
 		--wait\
 		--debug \
-		--recreate-pods \
+		$(HELM_RECREATE_PODS_ARG) \
 		--namespace=$(NAMESPACE) \
 		--timeout 300 \
 		$(HELM_VALUES_ARG) \
