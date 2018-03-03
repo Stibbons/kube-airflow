@@ -8,7 +8,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
   template:
     metadata:
       annotations:
@@ -30,7 +35,7 @@ spec:
               containerPort: 5555
               protocol: TCP
           args: ["flower"]
-          # livenessprobe:
-          #   httpGet:
-          #     path: "{{ .Values.ingress.path.flower }}/"
-          #     port: flower
+          livenessprobe:
+            httpGet:
+              path: "{{ .Values.ingress.path.flower }}/"
+              port: flower

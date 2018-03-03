@@ -1,13 +1,13 @@
 airflow:
   image:
-    ## Test with stibbons31/docker-airflow-dev to allow airflow mount other that root
+    ## Test with stibbons31/docker-airflow-dev to allow airflow 'web' to mount other that root
     repository: stibbons31/docker-airflow-dev
     tag: 2.0dev
     pull_policy: IfNotPresent
   service:
     # Minikube is happier with NodePort
     type: NodePort
-  web_replicas: 1
+  web_replicas: 2
   config:
     AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
 
@@ -22,6 +22,7 @@ ingress:
       traefik.frontend.rule.type: PathPrefix
       kubernetes.io/ingress.class: traefik
     flower:
+      # Use PathPrefixStrip because Flower does not respond to other than /
       traefik.frontend.rule.type: PathPrefixStrip
       kubernetes.io/ingress.class: traefik
   ## hostname for both endpoint
@@ -31,7 +32,7 @@ ingress:
     # check with the value documentation to see why "/flower" won't work as expected when using
     # minikube without ingress (if traefik is used, yes you can try different value for
     # ingress.path.flower)
-    flower: "/"
+    flower: ""
 
 persistence:
   enabled: true
