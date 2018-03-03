@@ -55,8 +55,7 @@ helm-init:
 
 helm-install-traefik:
 	minikube addons enable ingress
-	kubectl create -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-ds.yaml
-	kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/ui.yaml
+	kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-deployment.yaml
 
 helm-status:
 	helm status $(HELM_RELEASE_NAME)
@@ -77,8 +76,13 @@ helm-upgrade-install:
 		$(HELM_RELEASE_NAME) \
 		$(CHART_LOCATION)
 
+update-etc-host:
+	./minikube-update-hosts.sh
+
 test:
 	make helm-upgrade HELM_VALUES_FILE=./test/minikube-values.yaml
+
+test-and-update-etc-host: test update-etc-host
 
 helm-lint:
 	helm lint \
@@ -86,6 +90,8 @@ helm-lint:
 		--namespace=$(NAMESPACE) \
 		--debug \
 		$(HELM_VALUES_ARG)
+
+lint: helm-lint
 
 helm-delete:
 	helm delete --purge \

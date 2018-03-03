@@ -18,6 +18,7 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
       labels:
         app: {{ template "airflow.name" . }}-flower
         release: {{ .Release.Name }}
@@ -37,5 +38,5 @@ spec:
           args: ["flower"]
           livenessprobe:
             httpGet:
-              path: "{{ .Values.ingress.path.flower }}/"
+              path: "{{ .Values.ingress.flower.path }}/"
               port: flower

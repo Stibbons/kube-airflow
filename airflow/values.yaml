@@ -23,7 +23,7 @@ airflow:
   # image
   #   repository: stibbons31/docker-airflow-dev
   #   tag: 2.0dev
-  ## Airflow 2.0 allows changing the value ingress.path.web (see bellow). In version < 2.0,
+  ## Airflow 2.0 allows changing the value ingress.web.path (see bellow). In version < 2.0,
   ## changing the mount point of the web server won't have any effect.
   image:
     ##
@@ -71,57 +71,11 @@ ingress:
   ##
   ## enable ingress
   ## Note: If you want to change url prefix for web ui or flower even if you do not use ingress,
-  ## you can still change ingress.path.web and ingress.path.flower
+  ## you can still change ingress.web.path and ingress.flower.path
   enabled: false
   ##
-  ## Define the annotation here to configure rewriting rules related to your Load balancer
-  ##
-  ## Please note their is a small difference between the way Airflow Web server and Flower handles
-  ## URL prefixes in HTTP requests:
-  ##  - airflow webserver handles it completely, just let your load balancer to give the HTTP
-  ##    header like the requested URL (no special configuration neeed)
-  ##  - Flower wants HTTP header to behave like there was no URL prefix, and but still generates
-  ##    the right URL in html pages thanks to its `--url-prefix` parameter
-  ##
-  ##    Extracted from the Flower documentation:
-  ##    (https://github.com/mher/flower/blob/master/docs/config.rst#url_prefix)
-  ##
-  ##        To access Flower on http://example.com/flower run it with:
-  ##            flower --url-prefix=/flower
-  ##
-  ##        Use the following nginx configuration:
-  ##            server {
-  ##              listen 80;
-  ##              server_name example.com;
-  ##
-  ##              location /flower/ {
-  ##                rewrite ^/flower/(.*)$ /$1 break;
-  ##                proxy_pass http://example.com:5555;
-  ##                proxy_set_header Host $host;
-  ##              }
-  ##            }
-  annotations:
-    ## Annotations for the webserver
-    web:
-      ##
-      ## Example for Traefik:
-      # traefik.frontend.rule.type: PathPrefix
-      # kubernetes.io/ingress.class: traefik
-    ##
-    ## Annotations for the webserver
-    flower:
-      ##
-      ## NOTE: it is important here to have your reverse proxy strip the path/rewrite the URL
-      ## Example for Traefik:
-      # traefik.frontend.rule.type: PathPrefixStrip
-      # kubernetes.io/ingress.class: traefik
-  ##
-  ## hostname of the webserver and the flower
-  host: ""
-  ##
-  ## Configure path mount in URLs
-  ## NOTE: do NOT keep any trailing slash. For root configuration, set and empty string
-  path:
+  ## Configure the webserver endpoint
+  web:
     ##
     ## if web is '/airflow':
     ##  - UI will be accessible at 'http://mycompany.com/airflow/admin'
@@ -132,7 +86,23 @@ ingress:
     ## to use an image where airflow has been updated to its current HEAD.
     ## You can use the following one:
     ##  stibbons31/docker-airflow-dev:2.0dev
-    web: ""
+    ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
+    path: ""
+    ##
+    ## hostname for the webserver
+    host: ""
+    ##
+    ## Annotations for the webserver
+    ## Airflow webserver handles relative path completely, just let your load balancer give the HTTP
+    ## header like the requested URL (no special configuration neeed)
+    annotations:
+      ##
+      ## Example for Traefik:
+      # traefik.frontend.rule.type: PathPrefix
+      # kubernetes.io/ingress.class: traefik
+  ##
+  ## Configure the flower endpoind
+  flower:
     ##
     ## if flower is '/airflow/flower':
     ##  - Flower UI is at 'http://mycompany.com/airflow/flower'
@@ -141,7 +111,41 @@ ingress:
     ## only generates the right URL/relative paths in the **returned HTML files**, but expects the
     ## request to have been be at the root.
     ## That's why we need a reverse proxy/load balancer that is able to strip the path
-    flower: /flower
+    ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
+    path: /flower
+    ##
+    ## hostname for flower
+    host: ""
+    ##
+    ## Annotation for the Flower endpoint  ##
+    ## Please note their is a small difference between the way Airflow Web server and Flower handles
+    ## URL prefixes in HTTP requests:
+    ## Flower wants HTTP header to behave like there was no URL prefix, and but still generates
+    ## the right URL in html pages thanks to its `--url-prefix` parameter
+    ##
+    ##    Extracted from the Flower documentation:
+    ##    (https://github.com/mher/flower/blob/master/docs/config.rst#url_prefix)
+    ##
+    ##        To access Flower on http://example.com/flower run it with:
+    ##            flower --url-prefix=/flower
+    ##
+    ##        Use the following nginx configuration:
+    ##            server {
+    ##              listen 80;
+    ##              server_name example.com;
+    ##
+    ##              location /flower/ {
+    ##                rewrite ^/flower/(.*)$ /$1 break;
+    ##                proxy_pass http://example.com:5555;
+    ##                proxy_set_header Host $host;
+    ##              }
+    ##            }
+    annotations:
+      ##
+      ## NOTE: it is important here to have your reverse proxy strip the path/rewrite the URL
+      ## Example for Traefik:
+      # traefik.frontend.rule.type: PathPrefixStrip
+      # kubernetes.io/ingress.class: traefik
 
 ##
 ## Storage configuration

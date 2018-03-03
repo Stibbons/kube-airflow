@@ -17,22 +17,22 @@ celery:
 
 ingress:
   enabled: true
-  annotations:
-    web:
+  web:
+    path: "/airflow"
+    host: "minikube"
+    annotations:
       traefik.frontend.rule.type: PathPrefix
       kubernetes.io/ingress.class: traefik
-    flower:
+  # check with the value documentation to see why "/flower" won't work as expected when using
+  # minikube without ingress
+  # To have Flower working fine, you need to instantiate Traefik
+  flower:
+    path: "/airflow/flower"
+    host: "minikube"
+    annotations:
       # Use PathPrefixStrip because Flower does not respond to other than /
       traefik.frontend.rule.type: PathPrefixStrip
       kubernetes.io/ingress.class: traefik
-  ## hostname for both endpoint
-  host: "localhost"
-  path:
-    web: "/airflow"
-    # check with the value documentation to see why "/flower" won't work as expected when using
-    # minikube without ingress (if traefik is used, yes you can try different value for
-    # ingress.path.flower)
-    flower: ""
 
 persistence:
   enabled: true

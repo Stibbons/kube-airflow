@@ -98,15 +98,68 @@ You can start a test on minikube using the following commands:
 ```bash
 make minikube-start
 make dashboard
+make helm-install-traefik
 make test
+make update-etc-host
+```
+
+You can browse to the airflow webserver using:
+
+```bash
 make minikube-browse-web
 ```
+But do not forget to append the `/airflow` to the opened window.
 
 The Flower dashboard via running:
 
 ```bash
 make minikube-browse-flower
 ```
+It might not work as expected, as described in the `test/minikube-values.yaml` file. Prefer using
+the ingress (in this example, traefik).
+
+List all services with:
+
+```bash
+make minikube-service-list
+```
+
+TBD: For the moment you need to specify the NodePort port of the Traefik Ingress.
+For example, if we have this output:
+
+```bash
+$ make minikube-service-list
+minikube service list
+|-------------|-------------------------|--------------------------------|
+|  NAMESPACE  |          NAME           |              URL               |
+|-------------|-------------------------|--------------------------------|
+| airflow-dev | airflow-flower          | http://192.168.99.100:32088    |
+| airflow-dev | airflow-postgresql      | No node port                   |
+| airflow-dev | airflow-redis           | No node port                   |
+| airflow-dev | airflow-web             | http://192.168.99.100:30189    |
+| airflow-dev | airflow-worker          | No node port                   |
+| default     | kubernetes              | No node port                   |
+| kube-system | default-http-backend    | http://192.168.99.100:30001    |
+| kube-system | kube-dns                | No node port                   |
+| kube-system | kubernetes-dashboard    | http://192.168.99.100:30000    |
+| kube-system | tiller-deploy           | No node port                   |
+| kube-system | traefik-ingress-service | http://192.168.99.100:31333    |
+|             |                         | http://192.168.99.100:30616    |
+| kube-system | traefik-web-ui          | No node port                   |
+|-------------|-------------------------|--------------------------------|
+```
+
+Giving you have your `/etc/host` properly set by `make update-etc-host`:
+
+```bash
+$ cat /etc/hosts
+192.168.99.100 minikube traeffik-ui.minikube
+```
+
+You need to manually go to the following URL:
+
+- Airflow Web server: http://minikube:31333/airflow/admin/
+- Flower: http://minikube:31333/airflow/flower/
 
 ## Scale the number of workers
 
