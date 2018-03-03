@@ -7,7 +7,7 @@ airflow:
   service:
     # Minikube is happier with NodePort
     type: NodePort
-  web_replicas: 2
+  web_replicas: 1
   config:
     AIRFLOW__CORE__LOGGING_LEVEL: DEBUG
 

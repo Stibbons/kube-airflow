@@ -27,6 +27,9 @@ minikube-restart: minikube-start
 minikube-dashboard:
 	minikube dashboard
 
+minikube-service-list:
+	minikube service list
+
 minikube-browse-web:
 	minikube service $(HELM_RELEASE_NAME)-web -n $(NAMESPACE)
 
@@ -47,7 +50,6 @@ helm-install-traefik:
 	kubectl create -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-ds.yaml
 	kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/ui.yaml
 
-
 helm-status:
 	helm status $(HELM_RELEASE_NAME)
 
@@ -60,6 +62,7 @@ helm-upgrade-install:
 	helm upgrade --install \
 		--wait\
 		--debug \
+		--recreate-pods \
 		--namespace=$(NAMESPACE) \
 		--timeout 300 \
 		$(HELM_VALUES_ARG) \

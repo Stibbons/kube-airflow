@@ -43,9 +43,19 @@ airflow:
   scheduler_num_runs: "-1"
   ##
   ## how many replicas for web server
-  web_replicas: 2
+  ## For the moment, we recommend to leave this value to 1, since the webserver instance performs
+  ## the 'initdb' operation, starting more replicas will cause all the web containers to execute
+  ## it, which may cause unwanted issues on the database.
+  web_replicas: 1
   ##
   ## Custom airflow configuration environment variables
+  ## NOTE: Unfortunately, changing these value won't cause a reployment, despite the trick described
+  ## at:
+  ##   https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md#automatically-roll-deployments-when-configmaps-or-secrets-change
+  ## To force redeployment after configuration change, you need to use either `--recreate-pods`
+  ## either the Fabric8 configmap controller (This helm chart already carries the annotation).
+  ## See:
+  ##   https://github.com/fabric8io/configmapcontroller/
   config: {}
 
 ##
