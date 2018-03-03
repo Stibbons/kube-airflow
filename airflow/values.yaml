@@ -48,6 +48,9 @@ airflow:
   ## it, which may cause unwanted issues on the database.
   web_replicas: 1
   ##
+  ## Number of replicas for the flower server. Usually 1 is enough
+  flower_replicas: 1
+  ##
   ## Custom airflow configuration environment variables
   ## NOTE: Unfortunately, changing these value won't cause a reployment, despite the trick described
   ## at:

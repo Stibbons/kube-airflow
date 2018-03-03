@@ -13,7 +13,7 @@ airflow:
 
 celery:
   ## Number of celery workers to initialize
-  num_workers: 1
+  num_workers: 2
 
 ingress:
   enabled: true
