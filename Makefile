@@ -1,5 +1,6 @@
 .PHONY: test
 
+MINIKUBE_PROFILE=airflow
 NAMESPACE ?= airflow-dev
 CHART_LOCATION ?= airflow/
 HELM_RELEASE_NAME ?= airflow
@@ -21,40 +22,41 @@ endif
 
 reset-minikube:
 	# Force redownload of latest minikube ISO
-	minikube delete
-	minikube start
+	minikube -p $(MINIKUBE_PROFILE) delete
+	minikube -p $(MINIKUBE_PROFILE) start
 
 minikube-start:
-	minikube start
+	minikube -p $(MINIKUBE_PROFILE) start \
+		--memory 8192
 
 minikube-stop:
-	minikube stop
+	minikube -p $(MINIKUBE_PROFILE) stop
 
-minikube-restart: minikube-start
+minikube-restart: minikube-start helm-init
 
 minikube-dashboard:
-	minikube dashboard
+	minikube -p $(MINIKUBE_PROFILE) dashboard
 
 minikube-service-list:
-	minikube service list
+	minikube -p $(MINIKUBE_PROFILE) service list
 
 minikube-browse-web:
-	minikube service $(HELM_RELEASE_NAME)-web -n $(NAMESPACE)
+	minikube -p $(MINIKUBE_PROFILE) service $(HELM_RELEASE_NAME)-web -n $(NAMESPACE)
 
 minikube-url-web:
-	minikube service $(HELM_RELEASE_NAME)-web -n $(NAMESPACE) --url
+	minikube -p $(MINIKUBE_PROFILE) service $(HELM_RELEASE_NAME)-web -n $(NAMESPACE) --url
 
 minikube-browse-flower:
-	minikube service $(HELM_RELEASE_NAME)-flower -n $(NAMESPACE)
+	minikube -p $(MINIKUBE_PROFILE) service $(HELM_RELEASE_NAME)-flower -n $(NAMESPACE)
 
 minikube-url-flower:
-	minikube service $(HELM_RELEASE_NAME)-flower -n $(NAMESPACE) --url
+	minikube -p $(MINIKUBE_PROFILE) service $(HELM_RELEASE_NAME)-flower -n $(NAMESPACE) --url
 
 helm-init:
 	helm init --upgrade --wait --debug
 
 helm-install-traefik:
-	minikube addons enable ingress
+	minikube -p $(MINIKUBE_PROFILE) addons enable ingress
 	kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-deployment.yaml
 
 helm-status:
