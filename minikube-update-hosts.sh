@@ -9,9 +9,9 @@
 # chmod +x /usr/local/bin/minikube-update-hosts
 
 # set -x
-INGRESSES=minikube traefik-ui.minikube
+INGRESSES="minikube traefik-ui.minikube"
 
-MINIKUBE_IP=$(minikube ip)
+MINIKUBE_IP=$(minikube -p airflow ip)
 
 HOSTS_ENTRY="$MINIKUBE_IP $INGRESSES"
 

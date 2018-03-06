@@ -41,4 +41,7 @@ spec:
               path: "/"
               port: flower
             initialDelaySeconds: 60
-            periodSeconds: 10
+            periodSeconds: 60
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 5

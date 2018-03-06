@@ -99,8 +99,10 @@ You can start a test on minikube using the following commands:
 make minikube-start
 make dashboard
 make helm-install-traefik
+make helm-init
 make test
 make update-etc-host
+make minikube-service-list
 ```
 
 You can browse to the airflow webserver using:
