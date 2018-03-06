@@ -115,7 +115,8 @@ ingress:
     ## request to have been be at the root.
     ## That's why we need a reverse proxy/load balancer that is able to strip the path
     ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
-    path: /flower
+    ## NOTE: this is also used by livenessProbe
+    path: /
     ##
     ## hostname for flower
     host: ""
