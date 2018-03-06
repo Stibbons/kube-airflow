@@ -40,3 +40,5 @@ spec:
             httpGet:
               path: "{{ .Values.ingress.flower.path }}/"
               port: flower
+            initialDelaySeconds: 60
+            periodSeconds: 10
