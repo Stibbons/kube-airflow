@@ -202,9 +202,6 @@ dags:
   ##
   ## print debug logs
   git_sync_debug: false
-  ##
-  ## Disable Load examples as soon as you enable git_repo
-  load_examples: true
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md

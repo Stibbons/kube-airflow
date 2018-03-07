@@ -91,7 +91,7 @@ more information.
 This project uses a makefile to perform all major operation. It is mostly here as a reference to
 see which commands need to be performed.
 
-## Run with minikube
+## Run with minikube (wihtout ingres)
 
 You can start a test on minikube using the following commands:
 
@@ -110,24 +110,43 @@ You can browse to the airflow webserver using:
 ```bash
 make minikube-browse-web
 ```
-But do not forget to append the `/airflow` to the opened window.
 
-The Flower dashboard via running:
+Airflow webserver is not mounted at the root of the URL. You need to append `/airflow` to the 
+opened window:
 
-```bash
-make minikube-browse-flower
 ```
-It might not work as expected, as described in the `test/minikube-values.yaml` file. Prefer using
-the ingress (in this example, traefik).
-
-List all services with:
-
-```bash
-make minikube-service-list
+http://192.168.99.100:31706/airflow/
 ```
 
-TBD: For the moment you need to specify the NodePort port of the Traefik Ingress.
-For example, if we have this output:
+Flower is also configured in a subpath of the URL: `/airflow/flower`. But it behaves badly if a
+reverse proxy is not properly configured. You can see a full description in the
+`test/minikube-values.yaml` file. 
+In this example, the expected behavior is:
+
+- Flower appears at the root for example:
+  
+  ```
+  http://192.168.99.100:32677/
+  ``` 
+
+- Links point to the subpath, for instance:
+
+  ```
+  http://192.168.99.100:32677/airflow/flower/tasks
+  ```
+
+  Instead of:
+  
+  ```
+  http://192.168.99.100:32677/tasks
+  ```
+
+## Run with minikube (with Ingres)
+
+This example is actually configured to use Traefik as ingress controler that perform the reverse 
+proxy operations, especially for Flower where it is tricky.
+
+For example, if we have this list of available services:
 
 ```bash
 $ make minikube-service-list
@@ -151,17 +170,24 @@ minikube service list
 |-------------|-------------------------|--------------------------------|
 ```
 
-Giving you have your `/etc/host` properly set by `make update-etc-host`:
+The line that interest us is the port of the first IP exposed by `traefik-web-ui`. It is the
+main ingress. If will not be port 80 because of the way minikube works.
+
+The second port is the Traefik dashboard.
+
+Given you have your `/etc/host` properly set (ex: by `make update-etc-host`):
 
 ```bash
 $ cat /etc/hosts
 192.168.99.100 minikube traeffik-ui.minikube
 ```
 
-You need to manually go to the following URL:
+You can then manually go to the following URL:
 
 - Airflow Web server: http://minikube:31333/airflow/admin/
 - Flower: http://minikube:31333/airflow/flower/
+
+And see how both behave nicely !
 
 ## Scale the number of workers
 
