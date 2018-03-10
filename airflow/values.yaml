@@ -79,16 +79,16 @@ ingress:
   ##
   ## Configure the webserver endpoint
   web:
-    ##
-    ## if web is '/airflow':
-    ##  - UI will be accessible at 'http://mycompany.com/airflow/admin'
-    ##  - Healthcheck is at 'http://mycompany.com/airflow/health'
-    ##  - api is at 'http://mycompany.com/airflow/api'
     ## NOTE: This requires an airflow version > 1.9.x
     ## For the moment (March 2018) this is **not** available on official package, you will have
     ## to use an image where airflow has been updated to its current HEAD.
     ## You can use the following one:
     ##  stibbons31/docker-airflow-dev:2.0dev
+    ##
+    ## if web is '/airflow':
+    ##  - UI will be accessible at 'http://mycompany.com/airflow/admin'
+    ##  - Healthcheck is at 'http://mycompany.com/airflow/health'
+    ##  - api is at 'http://mycompany.com/airflow/api'
     ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
     path: ""
     ##
