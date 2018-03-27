@@ -108,7 +108,7 @@ more information.
 This project uses a makefile to perform all major operation. It is mostly here as a reference to
 see which commands need to be performed.
 
-## Run with minikube (wihtout ingres)
+## Run with minikube (without ingress)
 
 You can start a test on minikube using the following commands:
 
