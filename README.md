@@ -93,7 +93,7 @@ To use Airflow you need to add your custom DAG files. There are 3 options to do 
 ### Mount a Persistent Volume
 You can store your DAG files on an external volume, and mount this volume into the relevant Pods (scheduler, web, worker). In this scenario, your CI/CD pipeline should update the DAG files in the PV. Since all Pods should have the same collection of DAG files, it is recommended to create just one PV that is shared. This ensures that the Pods are always in sync about the DagBag. 
 
-To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany' or 'ReadWriteMany'. If you are on AWS, you can use Elastic File System (EFS). If you are on Azure, you can use Azure File Storage (AFS).
+To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany' or 'ReadWriteMany'. If you are on AWS, you can use [Elastic File System (EFS)](https://aws.amazon.com/efs/). If you are on Azure, you can use [Azure File Storage (AFS)](https://docs.microsoft.com/en-us/azure/aks/azure-files-dynamic-pv).
 
 ### Embedded DAGs
 
