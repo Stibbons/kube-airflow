@@ -12,7 +12,7 @@ airflow:
   service:
     type: ClusterIP
   ##
-  ## mount path for persistant volume.
+  ## mount path for persistent volume.
   ## Note that this location is referred to in airflow.cfg, so if you change it, you must update airflow.cfg accordingly.
   dag_path: /usr/local/airflow/dags
   ##
