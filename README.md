@@ -77,7 +77,26 @@ requests the logs from each workers individually.
 This requires to expose a port (8793) and ensure the pod DNS is accessible to the web server pod,
 which is why StatefulSet is for.
 
+## Adding your DAG files
+To use Airflow you need to add your custom DAG files. There are 3 options to do this:
+
+1. Use a git-sync sidecar
+2. Mount a Persistent Volume (PV)
+3. Embed the DAGs into the Docker container
+
+
+### Git-sync sidecar
+
+[Git-sync](https://github.com/kubernetes/git-sync) pulls a git repository into a local directory. In this scenario, you would store your DAG files into a git repository, and they are automatically updated into Airflow.
+
+
+### Mount a Persistent Volume
+You can store your DAG files on an external volume, and mount this volume into the relevant Pods (scheduler, web, worker). In this scenario, your CI/CD pipeline should update the DAG files in the PV. Since all Pods should have the same collection of DAG files, it is recommended to create just one PV that is shared. This ensures that the Pods are always in sync about the DagBag. 
+
+To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany' or 'ReadWriteMany'. If you are on AWS, you can use Elastic File System (EFS). If you are on Azure, you can use Azure File Storage (AFS).
+
 ### Embedded DAGs
+
 
 If you want more control on the way you deploy your DAGs, you can use embedded DAGs, where DAGs
 are burned inside the Docker container deployed as Scheduler and Workers.
