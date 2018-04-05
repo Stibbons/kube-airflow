@@ -1,5 +1,0 @@
-*~
-build
-rootfs
-airflow/charts/
-airflow/requirements.lock
